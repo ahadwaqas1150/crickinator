@@ -4,6 +4,8 @@ import Players from '../pages/players.vue'
 import Test from '../pages/test.vue'
 import Insert from '../pages/Insert.vue'
 import Predict from '../pages/predict.vue'
+import signup from '@/pages/signup.vue'
+import login from '@/pages/login.vue'
 
 
 
@@ -32,6 +34,16 @@ const routes = [
     path: '/predict',
     name: 'Predict',
     component: Predict
+  },
+  {
+    path: '/signup',
+    name: 'signup',
+    component: signup
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: login
   }
 
   
