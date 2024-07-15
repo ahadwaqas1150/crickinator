@@ -10,6 +10,7 @@
             label="Username"
             color="#255b5e"
             variant="outlined"
+            v-model="username"
           ></v-text-field>
         </v-responsive>    
 
@@ -19,10 +20,12 @@
             label="Password"
             color="#FF4500"
             variant="outlined"
+            v-model="password"
+            type="password"
           ></v-text-field>
         </v-responsive>    
 
-        <v-btn class="signup">
+        <v-btn class="signup" @click="handleClick()">
           <template v-slot:prepend>
             <CricketBatIcon />
           </template>
@@ -34,22 +37,69 @@
             <router-link to="/signup" class="login-link">Signup</router-link>
           </p>
       </div>
-      <div class="copyright">Copyright © 2024 Tee</div>
+      <div class="copyright">Copyright © 2024 Crickinator</div>
     </div>
   </div>
   </div>
 </template>
 
-<script setup>
+<script >
 import { useRouter } from 'vue-router';
 import CricketBatIcon from '../components/CricketBat-Icon.vue';
+import { ref } from 'vue';
+import {API} from '../main';
+export default {
+  components: {
+    CricketBatIcon
+  },
+  setup() {
+    const router = useRouter();
+    let username = ref('');
+    let password = ref('');
+    let message = ref('');
+    let handleClick =  () => {
+      console.log("Login clicked");
+      console.log(username.value, password.value);
 
-  const router = useRouter();
+      // Validate the username and password from the database
+      const requestNews = async() => {
+      try {
+        const request = await fetch(API+"/verify/user", {
+          method:"POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            username: username.value,
+            password: password.value
+          })
+        }
+        );
+        const response = await request.json();
+          console.log(response)
+        if(response["status"] == "ok") {
+          console.log(response)
+          console.log("Login successful");
+          router.push('/');
+        }
+        else {
+          this.message = "Invalid username or password";
+          throw new Exception("Failed to POST")
+        }
+      }
+      catch(e) {
+        console.log(this.message);
+      }
+    }
+    requestNews();
+    console.log("This page is loaded")
+    };
+  return {
+    router, username, password, handleClick, message
+  }
+  },
+  }
 
-  // Function to navigate to login page
-  const navigatetologin = () => {
-    router.push('/signup');
-  };
 </script>
 
 <style scoped>

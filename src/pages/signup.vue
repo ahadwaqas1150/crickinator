@@ -10,6 +10,7 @@
               label="Username"
               color="#FF4500"
               variant="outlined"
+              v-model="username"
             ></v-text-field>
           </v-responsive>    
   
@@ -19,6 +20,8 @@
               label="Email"
               color="#FF4500"
               variant="outlined"
+              v-model="email"
+              type="email"
             ></v-text-field>
           </v-responsive>  
   
@@ -28,10 +31,12 @@
               label="Password"
               color="#FF4500"
               variant="outlined"
+              v-model="password"
+              type="password"
             ></v-text-field>
           </v-responsive>    
   
-          <v-btn class="signup">
+          <v-btn class="signup" @click="signup()">
             <template v-slot:prepend>
               <CricketBatIcon />
             </template>
@@ -54,13 +59,49 @@
   <script setup>
     import { useRouter } from 'vue-router';
     import CricketBatIcon from '../components/CricketBat-Icon.vue';
+    import { ref } from 'vue';
+    import { API } from '../main';
 
-  
+    let username = ref('');
+    let email = ref('');
+    let password = ref('');
     const router = useRouter();
   
     // Function to navigate to login page
     const navigatetologin = () => {
       router.push('/login');
+    };
+    const signup = () => {
+      console.log("Signup clicked");
+      //send data to backend
+      console.log(username.value, email.value, password.value);
+      const requestNews = async() => {
+        try {
+          const response = await fetch(API+"/insert/user", {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              username: username.value,
+              email: email.value,
+              password: password.value
+            })
+          });
+          const data = await response.json();
+          console.log(data);
+          // Redirect to login page
+          if(data["status"] == "ok") {
+            navigatetologin();
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      };
+      requestNews();
+
+      // Navigate to login page
+      
     };
   </script>
   

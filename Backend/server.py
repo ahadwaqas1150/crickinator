@@ -35,6 +35,14 @@ CREATE TABLE Country(
     CountryName VARCHAR(100) PRIMARY KEY,
     RecentForm VARCHAR(20)
 );
+--Create the users table
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 """
 
 from flask import Flask, request, redirect, url_for, render_template, send_from_directory
@@ -42,6 +50,7 @@ from flask_cors import CORS
 import json
 import mysql.connector
 from flask import request
+import bcrypt
 import os
 import webbrowser
 
@@ -202,6 +211,51 @@ def getPlayerCount():
         return json.dumps({'status': 'error', 'message': str(e)})
 
     return json.dumps({'status': 'ok', 'count': result})
+#add user into database
+@app.route('/insert/user', methods=['POST'])
+def insert_user():
+    try:
+        cursor = db.cursor()
+        data = request.json
+        print(data)
+        
+        # Hash the password using bcrypt
+        hashed_password = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt())
+        cursor.execute('USE Cricketer')
+        cursor.execute('''
+            INSERT INTO users(
+                username, email, password
+            ) VALUES (%s, %s, %s)
+        ''', (
+            data['username'], data['email'], hashed_password.decode('utf-8')
+        ))
+        db.commit()
+        return json.dumps({'status': 'ok'})
+    except Exception as e:
+        return json.dumps({'status': 'error', 'message': str(e)})
+
+#verify user crendentials when used hash passwrods
+@app.route('/verify/user', methods=['POST'])
+def verifyUser():
+    global db
+    try:
+        cursor = db.cursor()
+        data = json.loads(request.data)
+        print(data)
+        cursor.execute('USE Cricketer')
+        cursor.execute('SELECT * FROM users WHERE username=%s', (data['username'],))
+        result = cursor.fetchone()
+        if result:
+            if bcrypt.checkpw(data['password'].encode('utf-8'), result[3].encode('utf-8')):
+                return json.dumps({'status': 'ok'})
+            else:
+                return json.dumps({'status': 'error', 'message': 'Invalid password'})
+        else:
+            return json.dumps({'status': 'error', 'message': 'User not found'})
+    except Exception as e:
+        return json.dumps({'status': 'error', 'message': str(e)})
+
+
 
 """uSHFUIH79Ahfu7sfvhudshauioshcvuasdhfvuifdahvauihfiPHAFCU89DHFCUIASDHCVUPHASUIDVHUASVHUIADFVHDFUIAHVADFUIHV
 DSBSDVBYSDVYUASGYUGAYVGYDFVBADFVBHADFHVDFUIHVUIDFVHADFUIVHDFUAHVHUAHVUAHSDVNJIASDN"""
