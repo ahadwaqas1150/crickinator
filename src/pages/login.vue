@@ -10,6 +10,9 @@
             label="Username"
             color="#255b5e"
             variant="outlined"
+            :error-messages="usernameError"
+            :rules="[required]"
+
             v-model="username"
           ></v-text-field>
         </v-responsive>    
@@ -21,11 +24,15 @@
             color="#FF4500"
             variant="outlined"
             v-model="password"
-            type="password"
+            :error-messages="passwordError"
+            :rules="[required]"
+            :append-inner-icon="showpassword ? 'mdi-eye' : 'mdi-eye-off'"
+            :type="showpassword ? 'text' : 'password'"
+            @click:append-inner="togglePassword"
           ></v-text-field>
         </v-responsive>    
 
-        <v-btn class="signup" @click="handleClick()">
+        <v-btn class="signup" @click="handleClick()" type="submit">
           <template v-slot:prepend>
             <CricketBatIcon />
           </template>
@@ -54,10 +61,13 @@ export default {
   },
   setup() {
     const router = useRouter();
-    let username = ref('');
-    let password = ref('');
-    let message = ref('');
-    let handleClick =  () => {
+    const username = ref('');
+    const password = ref('');
+    const message = ref('');
+    const usernameError = ref('');
+    const passwordError = ref('');
+    const showpassword = ref(false);
+    const handleClick =  () => {
       console.log("Login clicked");
       console.log(username.value, password.value);
 
@@ -83,19 +93,34 @@ export default {
           router.push('/');
         }
         else {
-          this.message = "Invalid username or password";
+          if(response.message == "User not found") {
+            usernameError.value = "Username not found";
+            passwordError.value = "";
+          }
+          else if(response.message == "Invalid password") {
+            passwordError.value = "Password incorrect";
+            usernameError.value = "";
+          }
           throw new Exception("Failed to POST")
         }
       }
       catch(e) {
-        console.log(this.message);
+        console.log(e);
       }
     }
     requestNews();
     console.log("This page is loaded")
     };
+    const togglePassword = () => {
+      showpassword.value = !showpassword.value;
+      setTimeout(() => {
+        password.value.focus();
+        password.value.selectionStart = password.value.value.length;
+      }, 0);
+    };
   return {
-    router, username, password, handleClick, message
+    router, username, password, handleClick, message, usernameError, passwordError,
+    showpassword,togglePassword
   }
   },
   }
