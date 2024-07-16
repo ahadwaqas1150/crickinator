@@ -3,7 +3,7 @@
     <!-- Navigation Drawer -->
     <v-navigation-drawer v-model="drawer" :rail="rail" permanent @click="rail = !rail">
       <!-- Drawer content -->
-      <v-list-item prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg" title="John Leider" nav>
+      <v-list-item prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg" :title=userName nav>
         <template v-slot:append>
           <v-btn icon variant="text" @click.stop="rail = !rail">
             <v-icon>mdi-chevron-left</v-icon>
@@ -15,7 +15,7 @@
 
       <!-- Customized Navigation Links -->
       <v-list dense nav>
-        <v-list-item @click="this.$router.push('/')" prepend-icon="mdi-home-city">
+        <v-list-item @click="this.$router.push('/welcome')" prepend-icon="mdi-home-city">
           <slot name="home">Home</slot>
         </v-list-item>
         <v-list-item @click="this.$router.push('/players')" prepend-icon="mdi-account">
@@ -101,7 +101,7 @@
 </template>
 
 <script>
-import Graph from '@/components/Graph.vue';
+import {getUserName} from '../main';
 export default {
   data() {
     return {
@@ -110,6 +110,7 @@ export default {
       items: ['California', 'Colorado', 'Florida', 'Georgia', 'Texas', 'Wyoming'],
       selected1: null,
       selected2: null,
+      userName: getUserName(),
     };
   },
   computed: {

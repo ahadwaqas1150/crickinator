@@ -6,6 +6,8 @@ import Insert from '../pages/Insert.vue'
 import Predict from '../pages/predict.vue'
 import signup from '@/pages/signup.vue'
 import login from '@/pages/login.vue'
+import Welcome from '@/pages/welcome.vue'
+
 
 
 
@@ -14,6 +16,11 @@ const routes = [
     path: '/',
     name: 'Index',
     component: Index
+  },
+  {
+    path: '/welcome',
+    name: 'Welcome',
+    component: Welcome
   },
   {
     path: '/players',

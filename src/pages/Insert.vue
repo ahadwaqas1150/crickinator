@@ -10,7 +10,7 @@
             <!-- Drawer content -->
             <v-list-item
                 prepend-avatar="https://randomuser.me/api/portraits/men/85.jpg"
-                title="John Leider"
+                :title= userName
                 nav
             >
                 <template v-slot:append>
@@ -28,7 +28,7 @@
 
             <!-- Customized Navigation Links -->
             <v-list dense nav>
-                <v-list-item @click=" this.$router.push('/')" prepend-icon="mdi-home-city">
+                <v-list-item @click=" this.$router.push('/welcome')" prepend-icon="mdi-home-city">
                     <slot name="home">Home</slot>
                 </v-list-item>
                 <v-list-item @click=" this.$router.push('/players')"  prepend-icon="mdi-account">
@@ -98,7 +98,7 @@
     import TeamList from '@/components/TeamList.vue'; // Import TeamList component
     import PlayerTable from '@/components/PlayerTable.vue'; // Import PlayerTable component
     import AddPlayerCard from '@/components/AddPlayerCard.vue'; // Import AddPlayerCard component
-
+    import {getUserName} from '../main';
     export default {
         components: {
         Main,
@@ -118,6 +118,7 @@
             ],
             PlayerInfo: [],
             SelectedPlayers: [],
+            userName: getUserName(),
         };
         },
         computed: {

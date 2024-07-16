@@ -54,7 +54,7 @@
 import { useRouter } from 'vue-router';
 import CricketBatIcon from '../components/CricketBat-Icon.vue';
 import { ref } from 'vue';
-import {API} from '../main';
+import {API,setUserName} from '../main';
 export default {
   components: {
     CricketBatIcon
@@ -89,8 +89,9 @@ export default {
           console.log(response)
         if(response["status"] == "ok") {
           console.log(response)
+          setUserName(username.value);
           console.log("Login successful");
-          router.push('/');
+          router.push('/welcome');
         }
         else {
           if(response.message == "User not found") {
