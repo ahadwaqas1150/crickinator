@@ -255,7 +255,57 @@ def verifyUser():
     except Exception as e:
         return json.dumps({'status': 'error', 'message': str(e)})
 
+#create a new table of users team having only player name and playing having captain written infront of a player whose name is sent from front end in database and insert players into it given an array from he front end and the name of table is the username + "team" also coming from frontend
+@app.route('/insert/team', methods=['POST'])
+def insertTeam():
+    global db
+    try:
+        cursor = db.cursor()
+        data = json.loads(request.data)
+        print(data)
+        cursor.execute('USE Cricketer')
+        table_name = data['username'] + 'team'
+        cursor.execute(f'''
+            CREATE TABLE IF NOT EXISTS {table_name}(
+                ID INT AUTO_INCREMENT PRIMARY KEY,
+                PlayerName VARCHAR(100) PRIMARY KEY,
+                Playing VARCHAR(10),
+                Country VARCHAR(50)
+            )
+        ''')
+        for player in data['selectedplayer']:
+            cursor.execute(f'''
+                INSERT INTO {table_name} (
+                    PlayerName, Playing, Country
+                ) VALUES (%s, %s, %s)
+            ''', (player, 'Member', data['country']))
+        
+        cursor.execute(f'''
+            UPDATE {table_name}
+            SET Playing = 'Captain'
+            WHERE PlayerName = %s
+        ''', (data['captain'][0],))  # Use data['captain'][0] assuming it's a list with one element
 
+        db.commit()
+        return json.dumps({'status': 'ok'})
+    except Exception as e:
+        return json.dumps({'status': 'error', 'message': str(e)})
+#return the team of a user from database
+@app.route('/get/playerteam', methods=['POST'])
+def getTeam():
+    global db
+    try:
+        cursor = db.cursor()
+        data = json.loads(request.data)
+        print(data)
+        cursor.execute('USE Cricketer')
+        table_name = data['username'] + 'team'
+        cursor.execute(f'SELECT PlayerName FROM {table_name}')
+        result = cursor.fetchall()
+    except Exception as e:
+        return json.dumps({'status': 'error', 'message': str(e)})
+
+    return json.dumps({'status': 'ok', 'team': result})
 
 """uSHFUIH79Ahfu7sfvhudshauioshcvuasdhfvuifdahvauihfiPHAFCU89DHFCUIASDHCVUPHASUIDVHUASVHUIADFVHDFUIAHVADFUIHV
 DSBSDVBYSDVYUASGYUGAYVGYDFVBADFVBHADFHVDFUIHVUIDFVHADFUIVHDFUAHVHUAHVUAHSDVNJIASDN"""

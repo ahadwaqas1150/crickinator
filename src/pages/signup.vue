@@ -113,6 +113,7 @@ const signup = async () => {
       }
     } else if (data.status === 'ok') {
       // Redirect to login page
+      localStorage.setItem('TeamMade','no');
       navigatetologin();
     }
   } catch (error) {
