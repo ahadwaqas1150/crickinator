@@ -72,12 +72,12 @@
   
   <script>
   import { API, UserName } from '../main';
-  import { makeTeam } from './insert';
+  import { makeTeam, SelectedPlayers } from './insert';
   export default {
     data: () => ({
       dialog: false,
       PlayerData: [],
-      selectedPlayers: [],
+      selectedPlayers: SelectedPlayers,
       newSelectedPlayers: [],
       maxPlayers: 15, // Set the maximum number of players allowed
       text: '',

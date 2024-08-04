@@ -90,7 +90,7 @@
             height="auto" 
             src="@/assets/isl.png"
             ></v-img>
-            <div class="imgh"><h1>{{ teams[0].name }}</h1></div> 
+            <div class="imgh"><h1>{{ country[0] }}</h1></div> 
           </v-col>
         </v-row>
       </div>
@@ -125,6 +125,7 @@ export default {
       teamPlayer: [],
       select:[],
       userName: UserName,
+      country: "",
     };
   },
   computed: {
@@ -139,7 +140,11 @@ export default {
     router(){
       this.$router.push('/players')
     },
+    setName(name){
+      this.country = name;
+    },  
     show(toggle, countryName) {
+      this.setName(countryName);
       console.log("saim");
       // console.log(playerName);
       // this.$router.push({ name: 'PlayerInfo', params: { name: playerName } });
