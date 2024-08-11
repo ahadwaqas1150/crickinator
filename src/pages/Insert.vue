@@ -77,7 +77,7 @@
 
             </div>
             <div class="table" v-if="team"> 
-            <AddTeamtable :players="SelectedPlayers"/>
+            <AddTeamtable :players="selectedPlayers"/>
             <TeamBtn v-on:saveTeam="saveT"/>
         </div>
         <div class="table1" v-if="player">
@@ -99,6 +99,7 @@
     import PlayerTable from '@/components/PlayerTable.vue'; // Import PlayerTable component
     import AddPlayerCard from '@/components/AddPlayerCard.vue'; // Import AddPlayerCard component
     import {getUserName} from '../main';
+    import { SelectedPlayers } from '@/components/insert';
     export default {
         components: {
         Main,
@@ -117,7 +118,7 @@
             { name: 'Pakistan', players: ['Babar Azam', 'Shaheen Afridi', 'Mohammad Rizwan', 'Azam Khan','Ahad Waqas','Ahmad Hassan Tanveer','Wajih-Us-Sama','Abdulllah Khalid'] },
             ],
             PlayerInfo: [],
-            SelectedPlayers: [],
+            selectedPlayers: [],
             userName: getUserName(),
         };
         },
@@ -136,7 +137,8 @@
         showT(){
             this.team = true;
             this.player = false;
-            this.SelectedPlayers = null;
+            this.selectedPlayers = SelectedPlayers;
+            console.log("we are in showT");
         },
         showP(){
             this.player = !this.player;

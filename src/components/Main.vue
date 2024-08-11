@@ -16,20 +16,6 @@
               :bodyText= item[2]
             />
           </v-col>
-          <!-- <v-col cols="12" sm="4">
-            <CardComponent
-              title="AUS vs ENG"
-              subtitle="OUTCOME: ENG"
-              bodyText="England won the match by 5 wickets."
-            />
-          </v-col>
-          <v-col cols="12" sm="4">
-            <CardComponent
-              title="SA vs WI"
-              subtitle="OUTCOME: SA"
-              bodyText="South Africa won the match by 3 wickets."
-            />
-          </v-col> -->
         </v-row>
       </v-container>
     </div>

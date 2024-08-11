@@ -284,7 +284,7 @@ def insertTeam():
             UPDATE {table_name}
             SET Playing = 'Captain'
             WHERE PlayerName = %s
-        ''', (data['captain'][0],))  # Use data['captain'][0] assuming it's a list with one element
+        ''', (data['captain'],))  # Use data['captain'][0] assuming it's a list with one element
 
         db.commit()
         return json.dumps({'status': 'ok'})
@@ -306,6 +306,118 @@ def getTeam():
         return json.dumps({'status': 'error', 'message': str(e)})
 
     return json.dumps({'status': 'ok', 'team': result})
+
+# Array(15)
+# 0
+# : 
+# {index: 0, deleted: 'Abrar Ahmed', replacedBy: 'Mitchell Starc'}
+# 1
+# : 
+# {index: 1, deleted: 'Agha Salman', replacedBy: 'Josh Hazlewood'}
+# 2
+# : 
+# {index: 2, deleted: 'Azam Khan', replacedBy: 'Adam Zampa'}
+# 3
+# : 
+# {index: 3, deleted: 'Babar Azam', replacedBy: 'Matthew Wade'}
+# 4
+# : 
+# {index: 4, deleted: 'Fakhar Zaman', replacedBy: 'Josh Inglis'}
+# 5
+# : 
+# {index: 5, deleted: 'Haris Rauf', replacedBy: 'Mitchell Marsh'}
+# 6
+# : 
+# {index: 6, deleted: 'Hasan Ali', replacedBy: 'Marcus Stoinis'}
+# 7
+# : 
+# {index: 7, deleted: 'Iftikhar Ahmed', replacedBy: 'Glenn Maxwell'}
+# 8
+# : 
+# {index: 8, deleted: 'Imad Wasim', replacedBy: 'Ashton Agar'}
+# 9
+# : 
+# {index: 9, deleted: 'Mohammad Amir', replacedBy: 'Cameron Green'}
+# 10
+# : 
+# {index: 10, deleted: 'Mohammad Rizwan', replacedBy: 'Travis Head'}
+# 11
+# : 
+# {index: 11, deleted: 'Naseem Shah', replacedBy: 'Tim David'}
+# 12
+# : 
+# {index: 12, deleted: 'Saim Ayub', replacedBy: 'David Warner'}
+# 13
+# : 
+# {index: 13, deleted: 'Shadab Khan', replacedBy: 'Nathan Ellis'}
+# 14
+# : 
+# {index: 14, deleted: 'Shaheen Shah Afridi', replacedBy: 'Pat Cummins'}
+#api to update the team of a user in database given the above array
+@app.route('/update/playerteam', methods=['POST'])
+def updateTeam():
+    global db
+    try:
+        cursor = db.cursor()
+        data = json.loads(request.data)
+        print(data)
+        cursor.execute('USE Cricketer')
+        table_name = data['username'] + 'team'
+        for player in data['selectedplayer']:
+            cursor.execute(f'''
+                UPDATE {table_name}
+                SET PlayerName = %s
+                WHERE PlayerName = %s
+            ''', (player['replacedBy'], player['deleted']))
+        
+        db.commit()
+        return json.dumps({'status': 'ok'})
+    except Exception as e:
+        return json.dumps({'status': 'error', 'message': str(e)})
+#return captain and country of a user team
+@app.route('/get/captain', methods=['POST'])
+def getCaptain():
+    global db
+    try:
+        cursor = db.cursor()
+        data = json.loads(request.data)
+        print(data)
+        cursor.execute('USE Cricketer')
+        table_name = data['username'] + 'team'
+        cursor.execute(f'SELECT PlayerName, Country FROM {table_name} WHERE Playing="Captain"')
+        result = cursor.fetchone()
+    except Exception as e:
+        return json.dumps({'status': 'error', 'message': str(e)})
+
+    return json.dumps({'status': 'ok', 'captain': result})
+#update captain and country of a user team
+@app.route('/update/captain', methods=['POST'])
+def updateCaptain():
+    global db
+    try:
+        cursor = db.cursor()
+        data = json.loads(request.data)
+        print(data)
+        cursor.execute('USE Cricketer')
+        table_name = data['username'] + 'team'
+        cursor.execute(f'''
+            UPDATE {table_name}
+            SET Playing = 'Member'
+            WHERE Playing = 'Captain'
+        ''')
+        cursor.execute(f'''
+            UPDATE {table_name}
+            SET Playing = 'Captain'
+            WHERE PlayerName = %s
+        ''', (data['captain'],))  # Use data['captain'][0] assuming it's a list with one element
+        cursor.execute(f'''
+            UPDATE {table_name}
+            SET Country = %s
+        ''', (data['country'],))
+        db.commit()
+        return json.dumps({'status': 'ok'})
+    except Exception as e:
+        return json.dumps({'status': 'error', 'message': str(e)})
 
 """uSHFUIH79Ahfu7sfvhudshauioshcvuasdhfvuifdahvauihfiPHAFCU89DHFCUIASDHCVUPHASUIDVHUASVHUIADFVHDFUIAHVADFUIHV
 DSBSDVBYSDVYUASGYUGAYVGYDFVBADFVBHADFHVDFUIHVUIDFVHADFUIVHDFUAHVHUAHVUAHSDVNJIASDN"""

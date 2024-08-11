@@ -56,7 +56,7 @@
           },
           body: JSON.stringify({})
         });
-        const response = await request.json();
+        let response = await request.json();
         console.log(response);
         if(response["status"] == "ok") {
           console.log("Teams names are here")
